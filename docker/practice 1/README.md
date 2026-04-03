@@ -1,3 +1,4 @@
+![Alt РЕШЕНИЕ](image.png)
 # Задание 1: Создание Dockerfile
 
 ## Цель задания
@@ -106,4 +107,3 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 
 ### Проверьте работу, http://localhost:8080/, docker ps
 
-![Alt РЕШЕНИЕ](image.png)
