@@ -105,3 +105,5 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 ### Потом запустите контейнер на порту 8080 хоста
 
 ### Проверьте работу, http://localhost:8080/, docker ps
+
+![Alt текст](.image.png)
