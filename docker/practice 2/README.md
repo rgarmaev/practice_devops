@@ -53,4 +53,20 @@ docker logs yandex-app
 docker exec yandex-app env | grep REGISTRY
 ```
 
----
+
+РЕЗУЛЬТАТ:
+worker@ubuntu:~/practice$ curl http://localhost:8080
+
+        <html>
+        <head><title>Task 2</title></head>
+        <body style="font-family: Arial; text-align: center; padding: 50px;">
+            <h1>Задание 2 выполнено!</h1>
+            <h2>Yandex Mirror Registry</h2>
+            <p>Registry: <strong>Yandex Mirror</strong></p>
+            <p>Базовый образ: <code>cr.yandex/mirror/python:3.11-slim</code></p>
+        </body>
+        </html>
+        worker@ubuntu:~/practice$ 
+
+
+----
