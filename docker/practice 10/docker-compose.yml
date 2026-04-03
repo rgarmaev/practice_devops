@@ -1,3 +1,4 @@
+
 version: '3.8'
 
 services:
@@ -9,16 +10,18 @@ services:
       - "8080:80"
     volumes:
       # ПРОБЛЕМА: Файл не существует
+      # РЕШНИЕ: cp ./config/app1.config.example /config/app1.config
       - ./config/app1.conf:/etc/nginx/conf.d/default.conf
     # ПРОБЛЕМА: Нет обязательной переменной ENV_REQUIRED
-
+    # РЕШЕНИЕ: Добавить переменную в конфиг: 
   # 2. Конфликт портов - оба на 80
   app2:
     image: nginx:alpine
     container_name: app2
     ports:
       # ПРОБЛЕМА: Порт 8080 уже занят app1
-      - "8080:80"
+      # РЕШЕНИЕ: Изменить порт на 8081
+      - "8081:80"
 
   # 3. Read-only volume где нужен write
   app3:
@@ -27,27 +30,31 @@ services:
     command: sh -c "echo 'test' > /data/test.txt && cat /data/test.txt"
     volumes:
       # ПРОБЛЕМА: read-only, но пытается записать
-      - ./data:/data:ro
+      # РЕШЕНИЕ: убрать :ro давть права на запись sudo chmod +w ./data  sudo chown worker ./data&&chgrp docker   
+      - ./data:/data
 
   # 4. Exit code 0 при ошибке (контейнер падает, но Docker думает что всё ок)
   app4:
     image: alpine:latest
     container_name: app4
-    command: sh -c "ping nonexistent-host || exit 0"
+    command: sh -c "set -e; ping nonexistent-host"
     # ПРОБЛЕМА: exit 0 при ошибке - Docker не знает что проблема
-
+    # РЕШЕНИЕ: Убрать || exit 0, sh -c "set -e; ping nonexistent-host" 
   # 5. Бесконечный restart loop
   app5:
     image: alpine:latest
     container_name: app5
     command: sh -c "exit 1"
-    restart: always
+    restart: 'no'
     # ПРОБЛЕМА: restart always + сразу падает = бесконечный loop
-
+    # РЕШЕНИЕ: restart: no
   # 6. Отсутствует обязательная переменная
   app6:
     image: postgres:15-alpine
     container_name: app6
+    environment: 
+    - POSTGRES_PASSWORD=secret
     # ПРОБЛЕМА: POSTGRES_PASSWORD обязательна, но не задана
+    # РЕШЕНИЕ: Добавить переменную
     ports:
       - "5432:5432"

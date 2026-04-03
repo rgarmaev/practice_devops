@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-ENV LOG_LEVEL=DEBUG
+ENV LOG_LEVEL=PROD
 
 COPY app.py .
 
