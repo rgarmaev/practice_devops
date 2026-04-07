@@ -14,6 +14,7 @@ services:
     container_name: api
     networks:
       - backend_net
+      - redis_net
 
   # Frontend - в своей сети, не видит API
   frontend:
@@ -23,6 +24,8 @@ services:
       - "8080:80"
     networks:
       - frontend_net
+      - backend_net
+     
     # Пытается подключиться к api, но не может (разные сети)
 
   # Worker - использует хардкод IP вместо имени
@@ -31,7 +34,7 @@ services:
     container_name: worker
     command: sh -c "while true; do echo 'Trying to connect to 192.168.1.100:6379'; sleep 5; done"
     networks:
-      - backend_net
+      - redis_net
     # Пытается подключиться к Redis по IP, который не существует
 
   # DB - в backend_net, но backend_net помечена internal
@@ -47,6 +50,7 @@ networks:
   # Redis в изолированной сети
   redis_net:
     driver: bridge
+    internal: true
 
   # Backend в internal сети (нет доступа к интернету и другим сетям)
   backend_net:
