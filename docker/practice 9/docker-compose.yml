@@ -7,6 +7,7 @@ services:
     container_name: redis
     networks:
       - redis_net
+      - backend_net
 
   # API/Backend - в internal сети (нет доступа наружу)
   api:
@@ -50,12 +51,12 @@ networks:
   # Redis в изолированной сети
   redis_net:
     driver: bridge
-    internal: true
+    
 
   # Backend в internal сети (нет доступа к интернету и другим сетям)
   backend_net:
     driver: bridge
-    internal: true
+    
 
   # Frontend в своей сети
   frontend_net:
