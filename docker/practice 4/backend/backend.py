@@ -20,7 +20,7 @@ class BackendHandler(BaseHTTPRequestHandler):
 
         if path == '/':
             self.send_response(200)
-            self.send_header('Content-type', 'application/json')
+            self.send_header('Content-type', 'application/json; charset=utf-8')
             self.end_headers()
             response = {
                 'service': APP_NAME,
@@ -29,34 +29,47 @@ class BackendHandler(BaseHTTPRequestHandler):
                 'counter': data_store['counter'],
                 'messages': data_store['messages']
             }
-            self.wfile.write(json.dumps(response).encode())
+            self.wfile.write(json.dumps(response, ensure_ascii=False).encode('utf-8'))
 
         elif path == '/increment':
             data_store['counter'] += 1
             self.send_response(200)
-            self.send_header('Content-type', 'application/json')
+            self.send_header('Content-type', 'application/json; charset=utf-8')
             self.end_headers()
             response = {'counter': data_store['counter']}
-            self.wfile.write(json.dumps(response).encode())
+            self.wfile.write(json.dumps(response, ensure_ascii=False).encode('utf-8'))
+
+        elif path == '/messages':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json; charset=utf-8')
+            self.end_headers()
+            response = {'messages': data_store['messages']}
+            self.wfile.write(json.dumps(response, ensure_ascii=False).encode('utf-8'))
 
         else:
             self.send_response(404)
+            self.send_header('Content-type', 'application/json; charset=utf-8')
             self.end_headers()
+            response = {'error': 'Not found'}
+            self.wfile.write(json.dumps(response, ensure_ascii=False).encode('utf-8'))
 
     def do_POST(self):
         if self.path == '/message':
             content_length = int(self.headers.get('Content-Length', 0))
-            body = self.rfile.read(content_length).decode()
+            body = self.rfile.read(content_length).decode('utf-8')
             data_store['messages'].append(body)
 
             self.send_response(201)
-            self.send_header('Content-type', 'application/json')
+            self.send_header('Content-type', 'application/json; charset=utf-8')
             self.end_headers()
             response = {'status': 'added', 'total': len(data_store['messages'])}
-            self.wfile.write(json.dumps(response).encode())
+            self.wfile.write(json.dumps(response, ensure_ascii=False).encode('utf-8'))
         else:
             self.send_response(404)
+            self.send_header('Content-type', 'application/json; charset=utf-8')
             self.end_headers()
+            response = {'error': 'Not found'}
+            self.wfile.write(json.dumps(response, ensure_ascii=False).encode('utf-8'))
 
     def log_message(self, format, *args):
         print(f"[BACKEND] {self.address_string()} - {format % args}")
